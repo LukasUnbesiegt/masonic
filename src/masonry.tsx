@@ -33,7 +33,13 @@ export function Masonry<Item>(props: MasonryProps<Item>) {
     },
     props
   ) as any;
-  nextProps.positioner = usePositioner(nextProps);
+  const itemCounter = React.useRef<number>(props.items.length);
+  let shrunk = false;
+  if (props.items.length !== itemCounter.current) {
+    if (props.items.length < itemCounter.current) shrunk = true;
+    itemCounter.current = props.items.length;
+  }
+  nextProps.positioner = usePositioner(nextProps, [shrunk && Math.random()]);
   nextProps.resizeObserver = useResizeObserver(nextProps.positioner);
   const scrollToIndex = useScrollToIndex(nextProps.positioner, {
     height: nextProps.height,
